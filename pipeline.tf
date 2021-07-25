@@ -11,14 +11,17 @@ resource "aws_codebuild_project" "tf-plan" {
 
   environment {
     compute_type = "BUILD_GENERAL1_SMALL"
-    image = "hashicorp/terraform:latest"
+   #image = "hashicorp/terraform:latest"
+    image = "aws/codebuild/standard:1.0"
     type = "LINUX_CONTAINER"
-    image_pull_credentials_type = "SERVICE_ROLE"
+   #image_pull_credentials_type = "SERVICE_ROLE"
+    image_pull_credentials_type = "CODEBUILD"
+/*
     registry_credential {
       credential = var.docker_credentials
       credential_provider = "SECRETS_MANAGER"
     }
-
+*/
   }
 
   source {
@@ -41,14 +44,18 @@ resource "aws_codebuild_project" "tf-apply" {
 
   environment {
     compute_type = "BUILD_GENERAL1_SMALL"
-    image = "hashicorp/terraform:latest"
+   #image = "hashicorp/terraform:latest"
+    image = "aws/codebuild/standard:1.0"
     type = "LINUX_CONTAINER"
-    image_pull_credentials_type = "SERVICE_ROLE"
+   #image_pull_credentials_type = "SERVICE_ROLE"
+    image_pull_credentials_type = "CODEBUILD"
+
+    /*
     registry_credential {
       credential = var.docker_credentials
       credential_provider = "SECRETS_MANAGER"
     }
-
+   */
   }
 
   source {
@@ -74,6 +81,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
 
   stage {
     name = "Source"
+
     action{
       name = "Source"
       category = "Source"
@@ -81,6 +89,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
       provider = "CodeStarSourceConnection"
       version = "1"
       output_artifacts = ["tf-code"]
+
       configuration = {
         FullRepositoryId = "pravinbangar21/PubPipe"
         BranchName   = "master"
@@ -92,6 +101,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
 
   stage {
     name ="Plan"
+
     action{
       name = "Build"
       category = "Build"
@@ -99,6 +109,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
       version = "1"
       owner = "AWS"
       input_artifacts = ["tf-code"]
+
       configuration = {
         ProjectName = "tf-cicd-plan"
       }
@@ -107,6 +118,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
 
   stage {
     name ="Deploy"
+
     action{
       name = "Deploy"
       category = "Build"
@@ -114,6 +126,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
       version = "1"
       owner = "AWS"
       input_artifacts = ["tf-code"]
+
       configuration = {
         ProjectName = "tf-cicd-apply"
       }
