@@ -68,7 +68,7 @@ user_data = <<-EOF
             EOF
 
 tags = {
-Name = "webapp-pravin"
+Name = "TF-WebServer-Pravin"
 }
 }
 
