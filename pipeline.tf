@@ -91,7 +91,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
       output_artifacts = ["tf-code"]
 
       configuration = {
-        FullRepositoryId = "pravinbangar21/PubPipe"
+        FullRepositoryId = "pravinbangar21/cicd_tf_p21"
         BranchName   = "master"
         ConnectionArn = var.codestar_credentials
         OutputArtifactFormat = "CODE_ZIP"
